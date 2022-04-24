@@ -1,0 +1,315 @@
+Practical 1
+1.	create the following class named 
+Book.cs
+using System;
+using System.Collections.Generic;
+namespace Bookstore.Models
+{
+public class Book
+{
+ public int Id{get;set;}
+ public string Title {get;set;}
+ public string Genre {get;set;}
+ public List<string>Authors{get;set;}
+ public decimal Price {get;set;}
+ public DateTime PublishDate{get;set;}
+}
+}
+
+2.	BooksController.cs
+using System.Diagnostics;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+using Bookstore.Models;
+using System.Collections.Generic;
+namespace Bookstore.Controllers
+{
+public class BooksController:Controller
+{
+public IActionResult Index()
+{
+return View();
+}
+public IActionResult Details()
+{
+Book book=new Book()
+{
+ Id=1,
+ Title="ASP.NET Core 3.1",
+ Genre="Programming for Web Development",
+ Price=300,
+ PublishDate=new System.DateTime(2022,23,4),
+ Authors=new List<string>{"Amit","abc"}
+};
+return View(book);
+}
+}
+}
+3.	named Details.cshtml with following code
+@model Bookstore.Models.Book
+@{
+ViewData["Title"] = "Book Details";
+}
+<h1 class= "display-4">Book Details</h1>
+<table>
+<tr>
+<td>@Html.DisplayNameFor(model => model.Id)</td>
+<td>@Html.DisplayFor(model => model.Id)</td>
+</tr>
+<tr>
+<td>@Html.DisplayNameFor(model => model.Title)</td>
+<td>@Html.DisplayFor(model => model.Title)</td>
+</tr>
+<tr>
+<td>@Html.DisplayNameFor(model => model.Genre)</td>
+<td>@Html.DisplayFor(model => model.Genre)</td>
+</tr>
+<tr>
+<td>@Html.DisplayNameFor(model => model.Price)</td>
+<td>@Html.DisplayFor(model => model.Price)</td>
+</tr>
+<tr>
+<td>@Html.DisplayNameFor(model => model.PublishDate)</td>
+<td>@Html.DisplayFor(model => model.PublishDate)</td>
+</tr>
+<tr>
+<td>@Html.DisplayNameFor(model => model.Authors)</td>
+<td>@Html.DisplayFor(model => model.Authors)</td>
+</tr>
+</table>
+Index
+@{
+ ViewData["Title"] = "Home Page";
+}
+<div class="text-center">
+ <h1 class="display-4">Welcome</h1>
+ <p>Learn about <a
+href="https://docs.microsoft.com/aspnet/core">building Web apps with
+ASP.NET Core</a>.</p>
+</div>
+Practical 2
+GlossaryItem.cs
+namespace Glossary
+{
+public class GlossaryItem
+{
+public string Term { get; set; }
+public string Definition { get; set; }
+}
+}
+GlossaryItem.cs
+//Controllers/GlossaryController.cs
+using System;
+using System.Collections.Generic;
+using Microsoft.AspNetCore.Mvc;
+using System.IO;
+namespace Glossary.Controllers
+{
+ [ApiController]
+ [Route("api/[controller]")]
+ public class GlossaryController: ControllerBase
+ {
+ private static List<GlossaryItem> Glossary = new List<GlossaryItem> {
+ new GlossaryItem
+ {
+ Term= "HTML",
+ Definition = "Hypertext Markup Language"
+ },
+ new GlossaryItem
+ {
+ Term= "MVC",
+ Definition = "Model View Controller"
+ },
+ new GlossaryItem
+ {
+ Term= "OpenID",
+ Definition = "An open standard for authentication"
+ }
+ };
+ [HttpGet]
+ public ActionResult<List<GlossaryItem>> Get()
+ { return Ok(Glossary);
+ } 
+[HttpGet]
+ [Route("{term}")]
+ public ActionResult<GlossaryItem> Get(string term)
+ {
+ var glossaryItem = Glossary.Find(item =>
+ item.Term.Equals(term, StringComparison.InvariantCultureIgnoreCase));
+ if (glossaryItem == null)
+ { return NotFound();
+ } else
+ {
+ return Ok(glossaryItem);
+ }
+ }
+ [HttpPost]
+ public ActionResult Post(GlossaryItem glossaryItem)
+ {
+ var existingGlossaryItem = Glossary.Find(item =>
+ item.Term.Equals(glossaryItem.Term, StringComparison.InvariantCultureIgnoreCase));
+ if (existingGlossaryItem != null)
+ {
+ return Conflict("Cannot create the term because it already exists.");
+ }
+ else
+ {
+ Glossary.Add(glossaryItem);
+ var resourceUrl = Path.Combine(Request.Path.ToString(), Uri.EscapeUriString(glossaryItem.Term));
+ return Created(resourceUrl, glossaryItem);
+ }
+ } 
+ [HttpPut]
+ public ActionResult Put(GlossaryItem glossaryItem)
+ {
+ var existingGlossaryItem = Glossary.Find(item =>
+ item.Term.Equals(glossaryItem.Term, StringComparison.InvariantCultureIgnoreCase));
+ if (existingGlossaryItem == null)
+ {
+ return BadRequest("Cannot update a nont existing term.");
+ } else
+ {
+ existingGlossaryItem.Definition = glossaryItem.Definition;
+ return Ok();
+ }
+ }
+ [HttpDelete]
+ [Route("{term}")]
+ public ActionResult Delete(string term)
+ {
+ var glossaryItem = Glossary.Find(item =>
+ item.Term.Equals(term, StringComparison.InvariantCultureIgnoreCase));
+ if (glossaryItem == null)
+ { return NotFound();
+ }
+ else
+ { Glossary.Remove(glossaryItem);
+ return NoContent();
+ }
+ }
+ }
+}
+Practical 3
+1.	MyMvc\ControllersHomeController.cs
+
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+using MyMvc.Models;
+namespace MyMvc.Controllers
+{ public class HomeController : Controller
+{
+public String Index()
+{ return "Hello World"; }
+}
+}
+2.	Models/StockQuote.cs
+namespace MyMvc.Models
+{
+ public class StockQuote
+ { public string Symbol {get;set;}
+ public int Price{get;set;}
+ }
+}
+
+MyMvc/View/Home/ index.cshtml
+@{
+ ViewData["Title"] = "Home Page";
+}
+<div>
+ Symbol: @Model.Symbol <br/>
+ Price: $@Model.Price <br/>
+</div>
+HomeController.cs
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+using MyMvc.Models;
+namespace MyMvc.Controllers
+{
+ public class HomeController : Controller
+ { public async Task <IActionResult> Index()
+ {
+ var model= new StockQuote{ Symbol='HELLO', Price=3200};
+ return View(model);
+ }
+ }
+}
+
+Practical 6
+docker-compose.yml
+version : '3'
+
+services :
+ database:
+  image : redis
+  deploy :
+   replicas : 2
+ web:
+  image : nginx
+  deploy :
+   replicas : 2
+  ports :
+   - 8500:80
+ visualizer:
+  image : dockersamples/visualizer
+  deploy:
+    placement:
+      constraints: [node.role == manager]
+  ports :
+   - 8080:8080
+  volumes :
+   - /var/run/docker.sock:/var/run/docker.sock
+Practical 7
+Main1.py
+def Add(a,b):
+  return a+b
+
+def Display():
+  print("Hello")
+  
+if __name__=='__main__':
+  Display()
+Test.py
+def TestAdd():
+  assert Add(3,4)==7
+  print("Add function works correctly")
+  
+if __name__=='__main__':
+  TestAdd()
+Config.yml
+version: 2.1
+
+# Define the jobs we want to run for this project
+jobs:
+  build:
+    docker:
+      - image: python
+    steps:
+      - checkout
+      - run: python Main1.py
+  test:
+    docker:
+      - image: python
+
+    steps:
+      - checkout
+      - run: python Test.py
+# Orchestrate our job run sequence
+workflows:
+  build_and_test:
+    jobs:
+      - build
+      - test
+
+
