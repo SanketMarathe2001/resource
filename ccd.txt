@@ -1,0 +1,116 @@
+Commands
+----------------------------------------------------------------------------------------
+Practical 1
+dotnet new mvc –auth none
+dotnet run
+
+----------------------------------------------------------------------------------------
+Practical 2
+dotnet new webapi -o Glossary
+cd Glossary
+dotnet run
+curl –insecure https://localhost:7061/weatherforecast
+curl --insecure https://localhost:7061/api/glossary
+curl --insecure https://localhost:7061/api/glossary/MVC
+curl --insecure -X POST -d "{\"term\": \"MFA\", \"definition\":\"An authentication process.\"}" -H "ContentType:application/json" https://localhost:7061/api/glossary
+curl --insecure -X PUT -d "{\"term\": \"MVC\", \"definition\":\"Modified record of Model View Controller.\"}" -H "Content-Type:application/json" https://localhost:7061/api/Glossary
+curl --insecure --request DELETE --url https://localhost:7061/api/glossary/openid
+curl --insecure https://localhost:7061/api/glossary 
+
+----------------------------------------------------------------------------------------
+Practical 3
+dotnet new mvc --auth none
+dotnet run
+dotnet run
+
+----------------------------------------------------------------------------------------
+Practical 4
+docker -v
+docker images
+docker ps
+docker ps -a
+docker login
+docker tag imagename userid/imagename
+docker push userid/imagename
+docker rm cotainerid
+docker rmi -f imagename
+docker run -it userid/imagename
+docker ps -a
+docker start containerid
+docker attach containerid
+docker system prune -a
+docker images
+docker ps
+docker volumes
+
+----------------------------------------------------------------------------------------
+Practical 5
+docker pull nginx
+docker run -it --name = webApp -d -p 80:80 nginx
+docker exec -it webApp bash 
+cd /usr/share/nginx/html 
+echo "Hello KB" > index.html
+exit
+docker ps
+docker stop webApp
+docker rm containerid     //you get it from command “docker ps -a”
+docker run -it --name=webApp1 -d -p 80:80 nginx
+docker volume create MyVolume
+docker volume ls
+docker volume inspect MyVolume
+docker run -d --name=webApp5 --mount source=MyVolume,destination=/usr/share/nginx/html -p 80:80 nginx
+ls / 
+cd /var/lib/docker 
+ls
+cd _data
+ls
+echo “from my Myvol” > index.html
+exit
+docker stop webApp5
+docker run -d --name=webApp6 --mount source=MyVolume, destination=/usr/share/nginx/html -p 80:80 nginx
+
+----------------------------------------------------------------------------------------
+Practical 6
+docker swarm init
+docker-compose config
+docker stack deploy nodeapp -c docker-compose.yml
+docker stack ls
+docker stack services nodeapp
+docker stack ps nodeapp
+docker service scale nodeapp_web=4
+docker stack ls
+docker service ls
+docker service ps nodeapp_web
+docker stack rm nodeapp
+docker swarm leave --force
+
+----------------------------------------------------------------------------------------
+Practical 8
+minikube start
+minikube status
+minikube stop
+minikube start
+kubectl get nodes
+kubectl get pod
+kubectl get services
+kubectl get pod
+
+kubectl create deployment nginxdep --image=nginx
+kubectl get deployment 
+kubectl get replicaset
+kubectl edit deployment nginxdep
+kubectl get pod
+kubectl get replicaset
+kubectl get deployment 
+
+kubectl create deployment mongodep --image=mongo
+kubectl get deployment 
+kubectl get pod
+kubectl logs mongodep mongodep-9cccdtrf7-3dlcx
+kubeclt describe pod mongodep-9cccdtrf7-3dlcx
+kubectl exec -it mongodep-9cccdtrf7-3dlcx /bin/bash
+ls
+df -h
+kubectl get deployment 
+kubectl get pod
+kubectl delete deployment mongodep
